@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Dropdown, Table } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
@@ -11,7 +11,7 @@ const OIerList: React.FC = () => {
   const [searchParams, setSearchParams] = usePartialSearchParams();
 
   const page = Number(searchParams.get('page') || 1);
-  const perPage = 30;
+  const perPage = Number(searchParams.get('per_page')) || 30;
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const province = provinces.includes(searchParams.get('province') as any)
@@ -95,7 +95,7 @@ const OIerList: React.FC = () => {
         </Table.Body>
       </Table>
 
-      <Pagination total={data.length} perPage={perPage} />
+      <Pagination total={data.length} />
     </>
   );
 };

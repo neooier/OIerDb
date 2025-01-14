@@ -1,15 +1,18 @@
 import React from 'react';
-import { Pagination as SemanticUIPagination, Icon } from 'semantic-ui-react';
+import {
+  Pagination as SemanticUIPagination,
+  Icon,
+  Select as SemanticUISelect,
+} from 'semantic-ui-react';
 import useScreenWidthWithin from '@/utils/useScreenWidthWithin';
 import usePartialSearchParams from '@/utils/usePartialSearchParams';
 import styles from './Pagination.module.less';
 
 interface PaginationProps {
   total: number;
-  perPage: number;
 }
 
-const Pagination: React.FC<PaginationProps> = (props) => {
+const Pagination: React.FC<PaginationProps> = ({ total }) => {
   const [searchParams, setSearchParams] = usePartialSearchParams();
 
   const screenWidthLessThan376 = useScreenWidthWithin(0, 376);
@@ -19,8 +22,16 @@ const Pagination: React.FC<PaginationProps> = (props) => {
   const screenWidthLessThan1024 = useScreenWidthWithin(0, 1024);
 
   const page = Number(searchParams.get('page')) || 1;
+  const perPage = Number(searchParams.get('per_page')) || 30;
   const setPage = (page: string) => setSearchParams({ page });
-  const totalPages = Math.ceil(props.total / props.perPage);
+  const setPerPage = (perPage: number) => {
+    const newTotalPages = Math.ceil(total / perPage);
+    setSearchParams({
+      per_page: perPage.toString(),
+      page: newTotalPages < page ? newTotalPages.toString() : page.toString(),
+    });
+  };
+  const totalPages = Math.ceil(total / perPage);
 
   let siblingRange: number, size: string;
   if (screenWidthLessThan376) {
@@ -40,7 +51,30 @@ const Pagination: React.FC<PaginationProps> = (props) => {
 
   return (
     <div className={styles.paginationContainer}>
+      <SemanticUISelect
+        style={{
+          minWidth: '90px',
+          borderTopRightRadius: '0',
+          borderBottomRightRadius: '0',
+        }}
+        value={perPage}
+        onChange={(e, { value }) => setPerPage(value as number)}
+        className={styles.perPageSelect}
+        options={[
+          { key: 30, value: 30, text: '30/页' },
+          { key: 50, value: 50, text: '50/页' },
+          { key: 100, value: 100, text: '100/页' },
+          { key: 200, value: 200, text: '200/页' },
+          { key: 500, value: 500, text: '500/页' },
+          { key: 800, value: 800, text: '800/页' },
+        ]}
+      />
       <SemanticUIPagination
+        style={{
+          borderLeft: 'none',
+          borderTopLeftRadius: '0',
+          borderBottomLeftRadius: '0',
+        }}
         firstItem={null}
         lastItem={null}
         size={size}

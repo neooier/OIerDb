@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { Table } from 'semantic-ui-react';
 import { Helmet } from 'react-helmet';
@@ -12,7 +12,7 @@ const Contests: React.FC = () => {
   const data = useMemo(() => Array.from(OIerDb.contests).reverse(), []);
 
   const page = Number(searchParams.get('page')) || 1;
-  const perPage = 20;
+  const perPage = Number(searchParams.get('per_page')) || 30;
 
   return (
     <>
@@ -45,7 +45,7 @@ const Contests: React.FC = () => {
           ))}
         </Table.Body>
       </Table>
-      <Pagination total={OIerDb.contests.length} perPage={perPage} />
+      <Pagination total={OIerDb.contests.length} />
     </>
   );
 };

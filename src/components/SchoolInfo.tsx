@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import React, { memo, useState } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 import {
   Chart as ChartJS,
@@ -37,7 +37,7 @@ const SchoolInfo: React.FC<SchoolProps> = ({ school }) => {
   const [searchParams] = useSearchParams();
 
   const page = Number(searchParams.get('page')) || 1;
-
+  const perPage = Number(searchParams.get('per_page')) || 30;
   const panes = Object.keys(school.award_counts)
     .map((key) => {
       // 奖项名称列表
@@ -190,14 +190,16 @@ const SchoolInfo: React.FC<SchoolProps> = ({ school }) => {
         </Table.Header>
         <Table.Body>
           {school.members
-            .slice(page * 30 - 30, page * 30)
+            .slice(page * perPage - perPage, page * perPage)
             .map((oier, index) => (
               <PersonCard
                 key={`SCHOOL${school.id}-${oier.uid}`}
                 oier={oier}
                 trigger={
                   <>
-                    <Table.Cell>{page * 30 - 30 + index + 1}</Table.Cell>
+                    <Table.Cell>
+                      {page * perPage - perPage + index + 1}
+                    </Table.Cell>
                     <Table.Cell>{oier.name}</Table.Cell>
                     <Table.Cell>{getGrade(oier)}</Table.Cell>
                     <Table.Cell>{oier.rank + 1}</Table.Cell>
@@ -209,7 +211,7 @@ const SchoolInfo: React.FC<SchoolProps> = ({ school }) => {
             ))}
         </Table.Body>
       </Table>
-      <Pagination total={school.members.length} perPage={30} />
+      <Pagination total={school.members.length} />
     </>
   );
 };

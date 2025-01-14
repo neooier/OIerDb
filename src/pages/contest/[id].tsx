@@ -1,4 +1,4 @@
-import React, { lazy, useMemo } from 'react';
+import React, { lazy, useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Form, Table } from 'semantic-ui-react';
 import { Helmet } from 'react-helmet';
@@ -38,7 +38,7 @@ const Contest: React.FC = () => {
   );
 
   const page = Number(searchParams.get('page')) || 1;
-  const perPage = 30;
+  const perPage = Number(searchParams.get('per_page')) || 30;
 
   if (!contest) return <NotFound />;
 
@@ -259,7 +259,7 @@ const Contest: React.FC = () => {
             ))}
         </Table.Body>
       </Table>
-      <Pagination total={data.length} perPage={perPage} />
+      <Pagination total={data.length} />
     </>
   );
 };
